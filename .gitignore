@@ -13,3 +13,5 @@ results/*
 .env
 !results/brief_eval.json
 site/
+docs/STRATEGY.md
+docs/TECHNICAL.md

@@ -15,6 +15,10 @@ qqq-volatility-forecaster = "qqq_volatility_forecaster.cli:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+"qqq_volatility_forecaster.brief" = ["prompts/*.md"]
+"qqq_volatility_forecaster.site" = ["templates/*.j2"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]

@@ -17,6 +17,7 @@ from qqq_volatility_forecaster.pipeline.backtest import load_summary, run_backte
 from qqq_volatility_forecaster.pipeline.brief import run_brief
 from qqq_volatility_forecaster.pipeline.daily import run_daily
 from qqq_volatility_forecaster.pipeline.silver import build_silver
+from qqq_volatility_forecaster.pipeline.site import run_site
 
 log = logging.getLogger("qqq_volatility_forecaster")
 
@@ -59,6 +60,7 @@ COMMANDS = {
     "backtest": _backtest,
     "daily": _daily,
     "brief": run_brief,
+    "site": run_site,
 }
 
 

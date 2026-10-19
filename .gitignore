@@ -12,3 +12,4 @@ results/*
 !results/summary.json
 .env
 !results/brief_eval.json
+site/

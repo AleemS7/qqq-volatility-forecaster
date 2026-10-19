@@ -18,4 +18,8 @@ FIRST_TEST_YEAR = 2007
 CHAMPION_MIN_BEAT_SHARE = 0.6
 SEED = 42
 
+BRIEF_MODEL = "claude-opus-5-5"
+BRIEF_PROMPT_VERSION = "brief_v1"
+BRIEF_MAX_ATTEMPTS = 2
+
 LOG_FORMAT = "%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]"

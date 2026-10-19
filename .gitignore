@@ -11,3 +11,4 @@ results/*
 !results/model_scores.csv
 !results/summary.json
 .env
+!results/brief_eval.json

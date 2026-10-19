@@ -43,6 +43,9 @@ def test_ingest_to_daily_forecast(workspace):
     assert "DQ-P02" in set(quarantine["rule_id"])
     assert set(run_log.frame()["status"]) == {"success"}
     assert len(read_table("gold", "forecasts", dated=False)) == 1
+    assert (
+        read_table("gold", "backtest_runs", dated=False)["champion"].iloc[-1] == report["champion"]
+    )
 
 
 def test_stale_inputs_skip_scoring(workspace):

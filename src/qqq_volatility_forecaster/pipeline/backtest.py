@@ -8,7 +8,7 @@ import pandas as pd
 
 from qqq_volatility_forecaster import config
 from qqq_volatility_forecaster.features.build import build_features
-from qqq_volatility_forecaster.io.tables import write_table
+from qqq_volatility_forecaster.io.tables import append_table, write_table
 from qqq_volatility_forecaster.models.evaluate import model_scores, pick_champion, summarize
 from qqq_volatility_forecaster.models.train import MODELS, backtest
 from qqq_volatility_forecaster.ops import RunLog
@@ -72,6 +72,8 @@ def run_backtest(prices: pd.DataFrame, indices: pd.DataFrame, run_log: RunLog) -
         "vrp": vrp_stats(windows),
     }
     SUMMARY_PATH.write_text(json.dumps(report, indent=2) + "\n")
+    run = {k: report[k] for k in ("run_id", "run_at", "commit", "champion")}
+    append_table(pd.DataFrame([{**run, "fingerprint": fingerprint}]), "gold", "backtest_runs")
     log.info("Commit %s%s", report["commit"][:8], " (dirty)" if report["dirty"] else "")
     log.info("\n%s", summary.round(3).to_string())
     log.info("Champion: %s", champion)

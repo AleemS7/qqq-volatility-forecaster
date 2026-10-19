@@ -23,6 +23,10 @@ Every command appends to `ops.run_log` with a `run_id`.
 | `ci-weekly` | Sunday 12:00 | Lint, tests, `pip-audit` |
 | `deploy` | Push to `main` | `databricks bundle deploy -t pr` |
 
+## Dashboard
+
+`QQQ Volatility Forecaster (<target>)` in Databricks, deployed with the bundle from `dashboards/qqq_volatility_forecaster.lvdash.json`. Pages: forecast vs. actual, overpricing history, model scorecard, pipeline health.
+
 ## Alerts
 
 ### Job failed
@@ -56,8 +60,8 @@ Gold tables refreshed by 01:00 UTC the next day on at least 95% of trading days.
 ## First-time setup
 
 1. Create a Databricks Free Edition workspace with a personal account.
-2. Create the catalogs `qqq_volatility_forecaster_dv` and `qqq_volatility_forecaster_pr`.
+2. Create the catalogs with SQL on the warehouse: `CREATE CATALOG qqq_volatility_forecaster_dv` and `CREATE CATALOG qqq_volatility_forecaster_pr`. The CLI can't create catalogs on Free Edition default storage.
 3. `databricks bundle deploy -t dv`, then upload `data/bronze/*.csv` to `/Volumes/qqq_volatility_forecaster_dv/bronze/raw/`.
 4. Run `qqq_volatility_forecaster_backtest`, then `qqq_volatility_forecaster_daily`.
-5. Add GitHub secrets `DATABRICKS_HOST`, `DATABRICKS_TOKEN` (90-day token), and `ANTHROPIC_API_KEY`.
+5. Add GitHub secrets `DATABRICKS_HOST` and `DATABRICKS_TOKEN` (90-day token). `ANTHROPIC_API_KEY` is optional; without it the brief uses the template.
 6. Turn on GitHub Pages with "GitHub Actions" as the source.

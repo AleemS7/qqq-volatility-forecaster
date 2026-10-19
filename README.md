@@ -30,7 +30,7 @@ This measures forecasts. It is not a trading strategy or financial advice.
 4. **Test the models** year by year: train on earlier years, test on the next. The 21 days before each test year are dropped from training so no future answers leak in.
 5. **Forecast today** with the winning model.
 6. **Write a daily summary** with AI. Every number is checked against the data. If a check fails twice, a plain template is used instead.
-7. **Publish** a public page with today's numbers, the summary, and a forecast-vs-actual chart.
+7. **Publish** a Databricks dashboard (forecast vs. actual, overpricing history, model scorecard, pipeline health) and a public page with today's numbers, the summary, and a chart.
 
 Volatility = `100 × sqrt(252/21 × sum of the next 21 squared daily log returns)`. VXN is built from Nasdaq-100 options, not QQQ options, but they track closely.
 
@@ -55,9 +55,10 @@ Each backtest saves the commit, a fingerprint of the data, and a copy of that da
 |---|---|
 | `src/qqq_volatility_forecaster/` | All the logic |
 | `notebooks/` | Thin Databricks wrappers |
-| `resources/`, `databricks.yml` | Databricks job definitions |
+| `resources/`, `databricks.yml` | Databricks jobs and dashboard |
+| `dashboards/` | Databricks dashboard definition |
 | `.github/workflows/` | Daily jobs, tests, security scans |
-| `tests/` | 85 tests |
+| `tests/` | 86 tests |
 | `docs/` | Model card, data sources, runbook, AI review, decision records |
 
 ## Limits

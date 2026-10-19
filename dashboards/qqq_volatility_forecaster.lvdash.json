@@ -1,0 +1,955 @@
+{
+  "datasets": [
+    {
+      "name": "latest",
+      "displayName": "latest",
+      "queryLines": [
+        "SELECT date, forecast, vxn, premium, rv_21, status FROM gold.daily_metrics ORDER BY date DESC LIMIT 1"
+      ]
+    },
+    {
+      "name": "forecast",
+      "displayName": "forecast",
+      "queryLines": [
+        "SELECT CAST(p.date AS DATE) AS date, p.forecast, p.actual, p.vxn FROM gold.backtest_predictions p JOIN (SELECT champion FROM gold.backtest_runs ORDER BY run_at DESC LIMIT 1) c ON p.model = c.champion"
+      ]
+    },
+    {
+      "name": "vrp",
+      "displayName": "vrp",
+      "queryLines": [
+        "SELECT CAST(date AS DATE) AS date, implied, realized, premium, scoreboard FROM gold.vrp_windows"
+      ]
+    },
+    {
+      "name": "vrp_stats",
+      "displayName": "vrp stats",
+      "queryLines": [
+        "SELECT ROUND(100 * AVG(CASE WHEN premium > 0 THEN 1 ELSE 0 END), 1) AS share_overpriced_pct, ROUND(MEDIAN(premium), 2) AS median_premium, ROUND(MIN(premium), 2) AS worst_premium FROM gold.vrp_windows"
+      ]
+    },
+    {
+      "name": "scores_overall",
+      "displayName": "scores overall",
+      "queryLines": [
+        "SELECT model, ROUND(mae, 3) AS mae FROM gold.model_scores WHERE year = 'overall'"
+      ]
+    },
+    {
+      "name": "scores_yearly",
+      "displayName": "scores yearly",
+      "queryLines": [
+        "SELECT model, CAST(year AS INT) AS year, ROUND(mae, 3) AS mae FROM gold.model_scores WHERE year <> 'overall'"
+      ]
+    },
+    {
+      "name": "beats",
+      "displayName": "beats",
+      "queryLines": [
+        "SELECT s.model, SUM(CASE WHEN s.mae < b.mae THEN 1 ELSE 0 END) AS years_beat_baseline FROM gold.model_scores s JOIN gold.model_scores b ON s.year = b.year AND b.model = 'M0' WHERE s.year <> 'overall' AND s.model <> 'M0' GROUP BY s.model"
+      ]
+    },
+    {
+      "name": "runs",
+      "displayName": "runs",
+      "queryLines": [
+        "SELECT TO_DATE(SUBSTR(started_at, 1, 10)) AS day, status, COUNT(*) AS steps FROM ops.run_log GROUP BY ALL"
+      ]
+    },
+    {
+      "name": "quarantine",
+      "displayName": "quarantine",
+      "queryLines": [
+        "SELECT rule_id, action, COUNT(*) AS rows FROM ops.quarantine GROUP BY ALL"
+      ]
+    },
+    {
+      "name": "rows_quarantined",
+      "displayName": "rows quarantined",
+      "queryLines": [
+        "SELECT TO_DATE(SUBSTR(started_at, 1, 10)) AS day, SUM(rows_quarantined) AS rows_quarantined, SUM(rows_in) AS rows_checked FROM ops.run_log WHERE step LIKE 'silver:%' GROUP BY ALL"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "forecast",
+      "displayName": "Forecast vs. actual",
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layout": [
+        {
+          "widget": {
+            "name": "forecast_intro",
+            "multilineTextboxSpec": {
+              "lines": [
+                "## Forecast vs. actual",
+                "The champion model's out-of-sample forecast of QQQ volatility over the next 21 trading days, next to what actually happened and VXN. Vol points."
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "latest_forecast",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "latest",
+                  "fields": [
+                    {
+                      "name": "forecast",
+                      "expression": "`forecast`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "forecast",
+                  "displayName": "Today's forecast"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Today's forecast"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "latest_vxn",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "latest",
+                  "fields": [
+                    {
+                      "name": "vxn",
+                      "expression": "`vxn`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "vxn",
+                  "displayName": "VXN"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "VXN"
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 2,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "latest_premium",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "latest",
+                  "fields": [
+                    {
+                      "name": "premium",
+                      "expression": "`premium`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "premium",
+                  "displayName": "VXN minus forecast"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "VXN minus forecast"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 2,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "forecast_line",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "forecast",
+                  "fields": [
+                    {
+                      "name": "date",
+                      "expression": "`date`"
+                    },
+                    {
+                      "name": "forecast",
+                      "expression": "`forecast`"
+                    },
+                    {
+                      "name": "actual",
+                      "expression": "`actual`"
+                    },
+                    {
+                      "name": "vxn",
+                      "expression": "`vxn`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "date",
+                  "scale": {
+                    "type": "temporal"
+                  },
+                  "displayName": "Date"
+                },
+                "y": {
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "fields": [
+                    {
+                      "fieldName": "forecast",
+                      "displayName": "Forecast"
+                    },
+                    {
+                      "fieldName": "actual",
+                      "displayName": "Realized"
+                    },
+                    {
+                      "fieldName": "vxn",
+                      "displayName": "VXN"
+                    }
+                  ]
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Forecast, realized, and VXN (2007 onward)"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 5,
+            "width": 6,
+            "height": 9
+          }
+        }
+      ]
+    },
+    {
+      "name": "overpricing",
+      "displayName": "Overpricing history",
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layout": [
+        {
+          "widget": {
+            "name": "vrp_intro",
+            "multilineTextboxSpec": {
+              "lines": [
+                "## Overpricing history",
+                "Non-overlapping 21-day windows. Premium = VXN at the start minus realized volatility over the window. The scoreboard adds up premiums. It ignores costs and contract details."
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "share_overpriced",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "vrp_stats",
+                  "fields": [
+                    {
+                      "name": "share_overpriced_pct",
+                      "expression": "`share_overpriced_pct`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "share_overpriced_pct",
+                  "displayName": "Windows overpriced (%)"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Windows overpriced (%)"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "median_premium",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "vrp_stats",
+                  "fields": [
+                    {
+                      "name": "median_premium",
+                      "expression": "`median_premium`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "median_premium",
+                  "displayName": "Median premium"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Median premium"
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 2,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "worst_premium",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "vrp_stats",
+                  "fields": [
+                    {
+                      "name": "worst_premium",
+                      "expression": "`worst_premium`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "worst_premium",
+                  "displayName": "Worst premium"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Worst premium"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 2,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "premium_bar",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "vrp",
+                  "fields": [
+                    {
+                      "name": "date",
+                      "expression": "`date`"
+                    },
+                    {
+                      "name": "premium",
+                      "expression": "`premium`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "date",
+                  "scale": {
+                    "type": "temporal"
+                  },
+                  "displayName": "Date"
+                },
+                "y": {
+                  "fieldName": "premium",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Premium"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Premium per window"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 5,
+            "width": 6,
+            "height": 7
+          }
+        },
+        {
+          "widget": {
+            "name": "scoreboard_line",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "vrp",
+                  "fields": [
+                    {
+                      "name": "date",
+                      "expression": "`date`"
+                    },
+                    {
+                      "name": "scoreboard",
+                      "expression": "`scoreboard`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "date",
+                  "scale": {
+                    "type": "temporal"
+                  },
+                  "displayName": "Date"
+                },
+                "y": {
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "fields": [
+                    {
+                      "fieldName": "scoreboard",
+                      "displayName": "Cumulative premium"
+                    }
+                  ]
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Premium seller scoreboard"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 12,
+            "width": 6,
+            "height": 7
+          }
+        }
+      ]
+    },
+    {
+      "name": "scorecard",
+      "displayName": "Model scorecard",
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layout": [
+        {
+          "widget": {
+            "name": "score_intro",
+            "multilineTextboxSpec": {
+              "lines": [
+                "## Model scorecard",
+                "Mean absolute error in vol points on test years only. Lower is better. M0 is the naive baseline."
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "mae_overall",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "scores_overall",
+                  "fields": [
+                    {
+                      "name": "model",
+                      "expression": "`model`"
+                    },
+                    {
+                      "name": "mae",
+                      "expression": "`mae`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "model",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Model"
+                },
+                "y": {
+                  "fieldName": "mae",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "MAE"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Overall error by model"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 3,
+            "height": 7
+          }
+        },
+        {
+          "widget": {
+            "name": "years_beat",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "beats",
+                  "fields": [
+                    {
+                      "name": "model",
+                      "expression": "`model`"
+                    },
+                    {
+                      "name": "years_beat_baseline",
+                      "expression": "`years_beat_baseline`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "model",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Model"
+                },
+                "y": {
+                  "fieldName": "years_beat_baseline",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Years Beat Baseline"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Test years beating M0"
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 2,
+            "width": 3,
+            "height": 7
+          }
+        },
+        {
+          "widget": {
+            "name": "mae_yearly",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "scores_yearly",
+                  "fields": [
+                    {
+                      "name": "year",
+                      "expression": "`year`"
+                    },
+                    {
+                      "name": "mae",
+                      "expression": "`mae`"
+                    },
+                    {
+                      "name": "model",
+                      "expression": "`model`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "year",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Year"
+                },
+                "y": {
+                  "fieldName": "mae",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "MAE"
+                },
+                "color": {
+                  "fieldName": "model",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Model"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Error by test year"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 9,
+            "width": 6,
+            "height": 8
+          }
+        }
+      ]
+    },
+    {
+      "name": "health",
+      "displayName": "Pipeline health",
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layout": [
+        {
+          "widget": {
+            "name": "health_intro",
+            "multilineTextboxSpec": {
+              "lines": [
+                "## Pipeline health",
+                "Every pipeline step writes to ops.run_log. Rows failing data quality rules go to ops.quarantine."
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "runs_by_status",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "runs",
+                  "fields": [
+                    {
+                      "name": "day",
+                      "expression": "`day`"
+                    },
+                    {
+                      "name": "steps",
+                      "expression": "`steps`"
+                    },
+                    {
+                      "name": "status",
+                      "expression": "`status`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "day",
+                  "scale": {
+                    "type": "temporal"
+                  },
+                  "displayName": "Day"
+                },
+                "y": {
+                  "fieldName": "steps",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Steps"
+                },
+                "color": {
+                  "fieldName": "status",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Status"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Pipeline steps by status"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 6,
+            "height": 7
+          }
+        },
+        {
+          "widget": {
+            "name": "quarantine_by_rule",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "quarantine",
+                  "fields": [
+                    {
+                      "name": "rule_id",
+                      "expression": "`rule_id`"
+                    },
+                    {
+                      "name": "rows",
+                      "expression": "`rows`"
+                    },
+                    {
+                      "name": "action",
+                      "expression": "`action`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "rule_id",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Rule Id"
+                },
+                "y": {
+                  "fieldName": "rows",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Rows"
+                },
+                "color": {
+                  "fieldName": "action",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Action"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Quarantined and flagged rows by rule"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 9,
+            "width": 3,
+            "height": 7
+          }
+        },
+        {
+          "widget": {
+            "name": "rows_quarantined",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "rows_quarantined",
+                  "fields": [
+                    {
+                      "name": "day",
+                      "expression": "`day`"
+                    },
+                    {
+                      "name": "rows_quarantined",
+                      "expression": "`rows_quarantined`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "day",
+                  "scale": {
+                    "type": "temporal"
+                  },
+                  "displayName": "Day"
+                },
+                "y": {
+                  "fieldName": "rows_quarantined",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Rows Quarantined"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Rows quarantined per day"
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 9,
+            "width": 3,
+            "height": 7
+          }
+        }
+      ]
+    }
+  ]
+}

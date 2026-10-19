@@ -4,6 +4,9 @@ ROOT = Path(__file__).resolve().parents[2]
 DATA_DIR = ROOT / "data"
 RESULTS_DIR = ROOT / "results"
 
+CATALOG = "qqq_volatility_forecaster_dv"
+VOLUME_DIR = "raw"
+
 TICKER = "QQQ"
 PRICE_START = "1999-03-10"
 VXN_SERIES = "VXNCLS"

@@ -1,4 +1,5 @@
 import logging
+from datetime import UTC, datetime
 
 import pandas as pd
 
@@ -22,6 +23,15 @@ def _fetch_indices() -> pd.DataFrame:
 
 
 SOURCES = {"qqq_prices": _fetch_prices, "vol_indices": _fetch_indices}
+ORIGINS = {"qqq_prices": "yahoo:QQQ", "vol_indices": "fred:VXNCLS,VIXCLS"}
+
+
+def with_metadata(frame: pd.DataFrame, name: str, run_id: str) -> pd.DataFrame:
+    return frame.assign(
+        _source=ORIGINS.get(name, name),
+        _ingested_at=datetime.now(UTC).isoformat(timespec="seconds"),
+        _run_id=run_id,
+    )
 
 
 def ingest(run_log: RunLog | None = None) -> RunLog:
@@ -34,7 +44,7 @@ def ingest(run_log: RunLog | None = None) -> RunLog:
                 log.exception("Source %s failed after retries, marking stale", name)
                 record["status"] = "stale"
                 continue
-            write_table(frame, "bronze", name)
+            write_table(with_metadata(frame, name, run_log.run_id), "bronze", name)
             record["rows_out"] = len(frame)
             log.info("Ingested %s: %d rows through %s", name, len(frame), frame.index.max().date())
     return run_log

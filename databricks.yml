@@ -1,0 +1,25 @@
+bundle:
+  name: qqq_volatility_forecaster
+
+include:
+  - resources/*.yml
+
+variables:
+  catalog:
+    description: Unity Catalog catalog for all tables
+    default: qqq_volatility_forecaster_dv
+
+targets:
+  dv:
+    mode: development
+    default: true
+    presets:
+      name_prefix: ""
+    variables:
+      catalog: qqq_volatility_forecaster_dv
+  pr:
+    mode: production
+    variables:
+      catalog: qqq_volatility_forecaster_pr
+    workspace:
+      root_path: /Workspace/Shared/.bundle/${bundle.name}/${bundle.target}

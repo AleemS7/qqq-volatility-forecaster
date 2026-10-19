@@ -33,7 +33,8 @@ def build_silver(run_log: RunLog, as_of: pd.Timestamp | None = None) -> Silver:
     clean = {}
     for name, check in checks.items():
         with run_log.step(f"silver:{name}") as record:
-            result = check(read_table("bronze", name))
+            raw = read_table("bronze", name)
+            result = check(raw[[c for c in raw.columns if not c.startswith("_")]])
             _record(record, result)
             if not result.issues.empty:
                 append_table(result.issues.assign(run_id=run_log.run_id), "ops", "quarantine")

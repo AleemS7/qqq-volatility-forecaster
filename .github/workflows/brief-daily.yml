@@ -1,0 +1,42 @@
+name: brief-daily
+
+on:
+  workflow_run:
+    workflows: [ingest-daily]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  CATALOG: qqq_volatility_forecaster_pr
+  DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+  DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+
+jobs:
+  brief:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - run: pip install -r requirements.txt -e .
+      - uses: databricks/setup-cli@main
+      - name: Download gold exports
+        run: |
+          mkdir -p data/gold
+          databricks fs cp "dbfs:/Volumes/$CATALOG/gold/exports/daily_metrics.csv" data/gold/daily_metrics.csv
+          databricks fs cp "dbfs:/Volumes/$CATALOG/gold/exports/daily_brief.csv" data/gold/daily_brief.csv || true
+      - run: qqq-volatility-forecaster brief
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      - name: Publish the brief
+        run: |
+          databricks fs cp data/gold/daily_brief.csv "dbfs:/Volumes/$CATALOG/gold/exports/daily_brief.csv" --overwrite
+          databricks bundle run qqq_volatility_forecaster_import_brief -t pr

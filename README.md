@@ -1,5 +1,7 @@
 # QQQ Volatility Forecaster
 
+**Live page:** [aleems7.github.io/qqq-volatility-forecaster](https://aleems7.github.io/qqq-volatility-forecaster/) (updates every weekday)
+
 Predicts how much QQQ will swing over the next month, checks if that beats the obvious guess, and measures how often the options market overprices the swing.
 
 ## Results

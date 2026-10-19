@@ -18,7 +18,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: databricks/setup-cli@main
       - run: databricks bundle validate -t pr
       - run: databricks bundle deploy -t pr

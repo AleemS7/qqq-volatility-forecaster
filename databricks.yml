@@ -23,3 +23,5 @@ targets:
     mode: production
     variables:
       catalog: qqq_volatility_forecaster_pr
+    workspace:
+      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}

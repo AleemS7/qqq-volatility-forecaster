@@ -3,14 +3,14 @@ import logging
 import subprocess
 from datetime import UTC, datetime
 
-from qvol import config
-from qvol.features.build import build_features
-from qvol.io.tables import read_table, write_table
-from qvol.models.evaluate import model_scores, pick_champion, summarize
-from qvol.models.train import MODELS, backtest
-from qvol.vrp.analysis import vrp_stats, vrp_windows
+from qqq_volatility_forecaster import config
+from qqq_volatility_forecaster.features.build import build_features
+from qqq_volatility_forecaster.io.tables import read_table, write_table
+from qqq_volatility_forecaster.models.evaluate import model_scores, pick_champion, summarize
+from qqq_volatility_forecaster.models.train import MODELS, backtest
+from qqq_volatility_forecaster.vrp.analysis import vrp_stats, vrp_windows
 
-log = logging.getLogger("qvol")
+log = logging.getLogger("qqq_volatility_forecaster")
 
 
 def _git(*args: str) -> str:

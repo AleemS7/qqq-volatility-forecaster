@@ -1,7 +1,7 @@
 import pandas as pd
 
-from qvol.config import HORIZON
-from qvol.features.build import TARGET
+from qqq_volatility_forecaster.config import HORIZON
+from qqq_volatility_forecaster.features.build import TARGET
 
 
 def vrp_windows(frame: pd.DataFrame, horizon: int = HORIZON) -> pd.DataFrame:

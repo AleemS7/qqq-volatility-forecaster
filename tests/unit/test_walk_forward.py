@@ -1,6 +1,6 @@
 import pandas as pd
 
-from qvol.models.walk_forward import walk_forward_splits
+from qqq_volatility_forecaster.models.walk_forward import walk_forward_splits
 
 DATES = pd.bdate_range("2001-01-01", "2010-12-31")
 

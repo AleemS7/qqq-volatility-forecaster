@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from qvol.config import HORIZON, TRADING_DAYS
+from qqq_volatility_forecaster.config import HORIZON, TRADING_DAYS
 
 
 def log_returns(adj_close: pd.Series) -> pd.Series:

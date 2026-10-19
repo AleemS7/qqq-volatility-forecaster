@@ -1,7 +1,11 @@
 import pandas as pd
 
-from qvol.config import HORIZON, VIX_SERIES, VXN_SERIES
-from qvol.features.volatility import forward_realized_vol, log_returns, realized_vol
+from qqq_volatility_forecaster.config import HORIZON, VIX_SERIES, VXN_SERIES
+from qqq_volatility_forecaster.features.volatility import (
+    forward_realized_vol,
+    log_returns,
+    realized_vol,
+)
 
 FEATURES = ["rv_5", "rv_21", "rv_63", "vxn", "vix", "vxn_minus_rv21", "ret_21", "drawdown_252"]
 TARGET = "y"

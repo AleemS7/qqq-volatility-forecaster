@@ -2,10 +2,10 @@ import logging
 
 import pandas as pd
 
-from qvol import config
-from qvol.ingest.fred import fetch_series
-from qvol.ingest.yahoo import fetch_prices
-from qvol.io.tables import write_table
+from qqq_volatility_forecaster import config
+from qqq_volatility_forecaster.ingest.fred import fetch_series
+from qqq_volatility_forecaster.ingest.yahoo import fetch_prices
+from qqq_volatility_forecaster.io.tables import write_table
 
 log = logging.getLogger(__name__)
 

@@ -1,6 +1,6 @@
 import pandas as pd
 
-from qvol.config import CHAMPION_MIN_BEAT_SHARE
+from qqq_volatility_forecaster.config import CHAMPION_MIN_BEAT_SHARE
 
 BASELINE = "M0"
 

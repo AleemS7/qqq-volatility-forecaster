@@ -1,4 +1,4 @@
-# QQQ Volatility Forecaster (`qvol`)
+# QQQ Volatility Forecaster
 
 Can I predict how much QQQ will swing over the next month better than the obvious guess, and how often does the options market overprice that swing?
 
@@ -54,12 +54,12 @@ The scoreboard is a proxy. It ignores transaction costs, contract details, and t
 ```bash
 python -m venv .venv
 .venv/Scripts/pip install -r requirements-dev.txt -e .
-python -m qvol.ingest
-python -m qvol
+python -m qqq_volatility_forecaster.ingest
+python -m qqq_volatility_forecaster
 pytest
 ```
 
-`python -m qvol` writes `results/summary.json` with the commit hash and whether `src/` had uncommitted changes.
+`python -m qqq_volatility_forecaster` writes `results/summary.json` with the commit hash and whether `src/` had uncommitted changes.
 
 ## Limitations
 

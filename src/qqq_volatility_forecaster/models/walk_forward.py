@@ -3,7 +3,7 @@ from collections.abc import Iterator
 import numpy as np
 import pandas as pd
 
-from qvol.config import HORIZON
+from qqq_volatility_forecaster.config import HORIZON
 
 
 def walk_forward_splits(

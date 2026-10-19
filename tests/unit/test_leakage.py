@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from qvol.features.build import FEATURES, build_features
+from qqq_volatility_forecaster.features.build import FEATURES, build_features
 
 
 def test_changing_the_future_does_not_change_todays_features(market):

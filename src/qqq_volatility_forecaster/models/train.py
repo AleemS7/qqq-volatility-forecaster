@@ -9,10 +9,10 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import FunctionTransformer
 from xgboost import XGBRegressor
 
-from qvol.config import FIRST_TEST_YEAR, HORIZON, SEED
-from qvol.features.build import FEATURES, TARGET
-from qvol.models.baselines import ColumnForecast
-from qvol.models.walk_forward import walk_forward_splits
+from qqq_volatility_forecaster.config import FIRST_TEST_YEAR, HORIZON, SEED
+from qqq_volatility_forecaster.features.build import FEATURES, TARGET
+from qqq_volatility_forecaster.models.baselines import ColumnForecast
+from qqq_volatility_forecaster.models.walk_forward import walk_forward_splits
 
 HAR_COLUMNS = ["rv_5", "rv_21", "rv_63", "vxn"]
 

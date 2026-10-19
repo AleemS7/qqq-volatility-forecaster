@@ -1,66 +1,38 @@
 # QQQ Volatility Forecaster
 
-Can I predict how much QQQ will swing over the next month better than the obvious guess, and how often does the options market overprice that swing?
+Predicts how much QQQ will swing over the next month, checks if that beats the obvious guess, and measures how often the options market overprices the swing.
 
 ## Results
 
-From commit `837a186`, data fingerprint `130bd9a534cc0d3b`, prices through 2026-10-16. 20 test years (2007–2026), 4,958 out-of-sample days. Full output: `results/summary.json` and `results/model_scores.csv`.
+Tested only on years the models never saw (2007–2026, 4,958 days). Error is the average miss in volatility points.
 
-| Model | MAE (vol pts) | vs. naive guess | Test years beating the naive guess |
+| Model | Avg error | Better than "last month repeats" | Years it won |
 |---|---|---|---|
-| M0 Naive: last month repeats | 6.22 | — | — |
-| M1 Market: VXN | 6.25 | −0.5% | 12 / 20 |
-| **M2 Linear regression (champion)** | **4.82** | **+22.6%** | **18 / 20** |
-| M3 Random forest | 5.07 | +18.5% | 17 / 20 |
-| M4 XGBoost | 5.25 | +15.6% | 17 / 20 |
+| Last month repeats (baseline) | 6.22 | — | — |
+| VXN (options market's guess) | 6.25 | −0.5% | 12 of 20 |
+| **Linear regression (best)** | **4.82** | **22.6%** | **18 of 20** |
+| Random forest | 5.07 | 18.5% | 17 of 20 |
+| XGBoost | 5.25 | 15.6% | 17 of 20 |
 
-The simple regression beat the naive guess by 22.6% and won in 18 of the 20 years it never saw. It lost in 2009 and 2022. The tree models also beat the baseline, but they didn't add enough to justify the extra complexity.
+- The simple regression won. The tree models didn't add enough to justify the extra complexity.
+- The options market priced a bigger swing than actually happened in **80.4%** of months.
+- The worst month (Feb 2020) wiped out about **12 months** of gains for sellers.
 
-**Overpricing (306 non-overlapping 21-day windows, 2001–2026):** VXN priced in a bigger swing than actually happened in 80.4% of windows, with a median premium of 4.4 vol points. The worst window, starting 2020-02-14, came in 66.5 points under realized volatility. That one month wiped out about 12 months of typical premium-seller gains.
+From commit `837a186`, data fingerprint `130bd9a534cc0d3b`. Full numbers: `results/summary.json`.
 
-The scoreboard is a proxy. It ignores transaction costs, contract details, and the exact payoff shape. This project measures forecasts. It is not a trading strategy and not financial advice.
+This measures forecasts. It is not a trading strategy or financial advice.
 
-## What it predicts
+## How it works
 
-The annualized realized volatility of QQQ's daily log returns over the next 21 trading days, in vol points:
+1. **Download** QQQ daily prices (Yahoo) and VXN/VIX (FRED). Retries on failure.
+2. **Check the data.** Bad rows (duplicate dates, impossible prices, VXN out of range) go to a quarantine table with a reason. Big moves are flagged, not dropped. If data stops updating, the forecast is skipped and everything says "data delayed."
+3. **Build features** using only what was known that day: recent volatility (1 week, 1 month, 3 months), VXN, VIX, last month's return, distance from the 1-year high.
+4. **Test the models** year by year: train on earlier years, test on the next. The 21 days before each test year are dropped from training so no future answers leak in.
+5. **Forecast today** with the winning model.
+6. **Write a daily summary** with AI. Every number is checked against the data. If a check fails twice, a plain template is used instead.
+7. **Publish** a public page with today's numbers, the summary, and a forecast-vs-actual chart.
 
-```
-r_t = ln(adj_close_t / adj_close_{t-1})
-y_t = 100 × sqrt( (252 / 21) × Σ_{i=1..21} r_{t+i}² )
-```
-
-VXN at the close of day t is the options market's estimate of the same quantity. VXN is built from Nasdaq-100 index options, not QQQ options. QQQ tracks the index closely, but they are not identical.
-
-## Method
-
-- **Features** (known at the close of day t): `rv_5`, `rv_21`, `rv_63`, `vxn`, `vix`, `vxn_minus_rv21`, `ret_21`, `drawdown_252`.
-- **Models:** M0 naive (`rv_21`), M1 market (`vxn`), M2 linear regression on log `rv_5`, `rv_21`, `rv_63`, `vxn`, M3 random forest, M4 XGBoost. Fitted models predict `log(y)`. No tuning beyond fixed settings.
-- **Testing:** walk-forward, expanding window from 2001, one refit per year, first test year 2007. The last 21 trading days before each test year are dropped from training because their targets overlap the test year.
-- **Metric:** mean absolute error (MAE) in vol points, overall and per test year.
-- **Champion rule:** lowest overall MAE among models that beat M0 in at least 60% of test years. Ties go to the simpler model.
-- **Overpricing:** non-overlapping 21-day windows, `premium = vxn_t − y_t`.
-
-Details: [model card](docs/model_card.md), [data sources](docs/data_sources.md), [decision records](docs/adr).
-
-## Pipeline
-
-```mermaid
-flowchart LR
-  A[Yahoo: QQQ] --> C[GitHub Actions: ingest]
-  B[FRED: VXN, VIX] --> C
-  C --> D[Volume: raw files]
-  D --> E[Bronze]
-  E --> F[Silver + quarantine]
-  F --> G[Gold: features, forecast]
-  G --> H[GitHub Actions: LangGraph brief]
-  H --> I[Gold: daily brief]
-  I --> J[GitHub Pages]
-  G --> K[Power BI]
-```
-
-- **Data quality:** duplicate dates, a low above the high, and non-positive prices are quarantined with a rule ID. Moves over 15% and gaps over 5 days are flagged. VXN and VIX outside 5–150 are nulled. A source with no new data for more than 2 trading days is marked stale, and scoring is skipped.
-- **Daily brief:** a fixed LangGraph workflow drafts a short summary and checks every number against the data. After two failed checks it publishes a template instead. See [AI use review](docs/ai_use_review.md).
-- **Operations:** every step writes to `ops.run_log`. Alerts and replay steps are in the [runbook](docs/runbook.md).
+Volatility = `100 × sqrt(252/21 × sum of the next 21 squared daily log returns)`. VXN is built from Nasdaq-100 options, not QQQ options, but they track closely.
 
 ## Run it
 
@@ -75,38 +47,24 @@ qqq-volatility-forecaster site
 pytest
 ```
 
-`backtest` writes `results/summary.json` with the commit hash, whether `src/` had uncommitted changes, and a fingerprint of the input data. The exact input is saved under `data/snapshots/<fingerprint>/`, so any reported number can be reproduced.
+Each backtest saves the commit, a fingerprint of the data, and a copy of that data, so any number can be reproduced exactly.
 
-## Layout
+## Where things are
 
-```
-src/qqq_volatility_forecaster/
-  ingest/      Yahoo and FRED downloads with retries
-  quality/     data quality rules and quarantine
-  features/    realized volatility and features
-  models/      baselines, walk-forward splitter, training, evaluation
-  vrp/         overpricing analysis
-  brief/       LangGraph workflow, verifier, LLM client, prompt
-  site/        static page renderer and template
-  pipeline/    silver, backtest, daily, brief, site, Databricks exchange
-  io/          the only module that reads or writes tables (CSV or Delta)
-notebooks/     thin Databricks wrappers
-resources/     Databricks job definitions
-tests/         unit and end-to-end tests on synthetic data
-```
-
-## Limitations
-
-- Daily close-to-close returns are a noisy measure of volatility. Intraday data would be better.
-- VXN is an index-option measure applied to an ETF.
-- About 5,000 test days across 20 years, with a handful of crisis periods carrying most of the error.
-
-## Licenses
-
-| Dependency | License |
+| Folder | What's in it |
 |---|---|
-| pandas, NumPy, scikit-learn, Jinja2 | BSD-3-Clause |
-| XGBoost, yfinance, requests, tenacity | Apache-2.0 |
-| LangGraph, anthropic | MIT |
+| `src/qqq_volatility_forecaster/` | All the logic |
+| `notebooks/` | Thin Databricks wrappers |
+| `resources/`, `databricks.yml` | Databricks job definitions |
+| `.github/workflows/` | Daily jobs, tests, security scans |
+| `tests/` | 85 tests |
+| `docs/` | Model card, data sources, runbook, AI review, decision records |
 
-Data: QQQ prices from Yahoo Finance for personal use. VXN and VIX from Cboe Global Markets via FRED, Federal Reserve Bank of St. Louis.
+## Limits
+
+- Daily closing prices are a rough measure of volatility.
+- 2008 and 2020 cause most of the error.
+
+## Credits
+
+Data: Yahoo Finance (personal use), Cboe via FRED. Libraries: pandas, NumPy, scikit-learn, Jinja2 (BSD-3); XGBoost, yfinance, requests, tenacity (Apache-2.0); LangGraph, anthropic (MIT).

@@ -2,9 +2,9 @@
 
 ## 2026-10-18
 
-Built on `feature/1-core-backtest` (local only, no remote yet):
+Built on `feature/1-core-backtest` :
 
-- **Core:** ingest, target, features, walk-forward M0–M4, champion rule, overpricing analysis. Results in the README from commit `837a186`.
+- **Core:** ingest, target, features, walk-forward M0–M4, champion rule, overpricing analysis. Results in the README from commit `c92fc26`.
 - **Pipeline:** data quality rules and quarantine, retries, stale detection, run log, daily scoring, CSV and Delta storage, Databricks bundle and notebooks, daily GitHub Actions workflows.
 - **Brief:** LangGraph workflow, number verifier, fallback template, 20-day eval set.
 - **Page:** static GitHub Pages "today" page with a stale-data banner.

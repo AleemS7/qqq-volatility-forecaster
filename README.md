@@ -18,7 +18,7 @@ Tested only on years the models never saw (2007–2026, 4,958 days). Error is th
 - The options market priced a bigger swing than actually happened in **80.4%** of months.
 - The worst month (Feb 2020) wiped out about **12 months** of gains for sellers.
 
-From commit `837a186`, data fingerprint `130bd9a534cc0d3b`. Full numbers: `results/summary.json`.
+From commit `c92fc26`, data fingerprint `130bd9a534cc0d3b`. Full numbers: `results/summary.json`.
 
 This measures forecasts. It is not a trading strategy or financial advice.
 

@@ -1,11 +1,12 @@
 {
-  "commit": "ae242cac8c5323ba801659e1c7b38a1713f65852",
+  "commit": "182bf1481e0aa3793d2e5fb98acbfc80e6b897ca",
   "dirty": true,
-  "run_id": "20261019T020450-72d00b",
-  "run_at": "2026-10-19T02:04:56+00:00",
+  "run_id": "20261019T020722-907ae1",
+  "run_at": "2026-10-19T02:07:28+00:00",
   "data": {
     "price_start": "1999-03-10",
     "price_end": "2026-10-16",
+    "fingerprint": "130bd9a534cc0d3b",
     "test_years": [
       2007,
       2008,
@@ -52,24 +53,24 @@
       "mae": 4.8187,
       "years_beat_baseline": 18,
       "test_years": 20,
-      "improvement_pct": 22.5504,
+      "improvement_pct": 22.5503,
       "beat_share": 0.9
     },
     "M3": {
       "name": "Random forest",
-      "mae": 5.07,
+      "mae": 5.0702,
       "years_beat_baseline": 17,
       "test_years": 20,
-      "improvement_pct": 18.512,
+      "improvement_pct": 18.5078,
       "beat_share": 0.85
     },
     "M4": {
       "name": "XGBoost",
-      "mae": 5.2576,
-      "years_beat_baseline": 15,
+      "mae": 5.2502,
+      "years_beat_baseline": 17,
       "test_years": 20,
-      "improvement_pct": 15.4966,
-      "beat_share": 0.75
+      "improvement_pct": 15.6154,
+      "beat_share": 0.85
     }
   },
   "champion": "M2",
@@ -78,13 +79,13 @@
     "start": "2001-03-05",
     "end": "2026-08-24",
     "share_overpriced": 0.803921568627451,
-    "median_premium": 4.444315894658035,
-    "mean_premium": 3.672876677161672,
-    "typical_gain": 5.405323694289903,
-    "worst_premium": -66.54476636862141,
+    "median_premium": 4.444275488212271,
+    "mean_premium": 3.6728880837490965,
+    "typical_gain": 5.405064904739069,
+    "worst_premium": -66.54486162186606,
     "worst_window_start": "2020-02-14",
-    "worst_window_months_erased": 12.310967877634827,
-    "max_scoreboard_drawdown": 67.36870262370394,
-    "max_drawdown_months_erased": 12.463398389049512
+    "worst_window_months_erased": 12.311574938447206,
+    "max_scoreboard_drawdown": 67.36864969320345,
+    "max_drawdown_months_erased": 12.463985332375152
   }
 }

@@ -43,6 +43,9 @@ def run_backtest(prices: pd.DataFrame, indices: pd.DataFrame, run_log: RunLog) -
         record["rows_in"] = len(frame)
         record["rows_out"] = len(predictions)
 
+    fingerprint = data_fingerprint(prices, indices)
+    write_table(prices, f"snapshots/{fingerprint}", "qqq_prices")
+    write_table(indices, f"snapshots/{fingerprint}", "vol_indices")
     write_table(predictions, "gold", "backtest_predictions", index=False)
     write_table(scores, "gold", "model_scores", index=False)
     write_table(windows, "gold", "vrp_windows")
@@ -57,7 +60,7 @@ def run_backtest(prices: pd.DataFrame, indices: pd.DataFrame, run_log: RunLog) -
         "data": {
             "price_start": str(prices.index.min().date()),
             "price_end": str(prices.index.max().date()),
-            "fingerprint": data_fingerprint(prices, indices),
+            "fingerprint": fingerprint,
             "test_years": sorted(int(y) for y in predictions["year"].unique()),
             "test_rows": int((predictions["model"] == "M0").sum()),
         },

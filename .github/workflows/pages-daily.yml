@@ -40,7 +40,7 @@ jobs:
             databricks fs cp "dbfs:/Volumes/$CATALOG/gold/exports/$name.csv" "data/gold/$name.csv"
           done
       - run: qqq-volatility-forecaster site
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: site
 

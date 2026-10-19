@@ -12,6 +12,13 @@ def test_table_name(monkeypatch):
     assert table_name("snapshots/abc", "qqq_prices") == f"{config.CATALOG}.snapshots.abc_qqq_prices"
 
 
+def test_dated_reads_come_back_sorted(tmp_path, monkeypatch):
+    monkeypatch.setattr(config, "DATA_DIR", tmp_path)
+    shuffled = pd.DataFrame({"date": ["2024-01-03", "2024-01-01", "2024-01-02"], "x": [3, 1, 2]})
+    write_table(shuffled, "silver", "t", index=False)
+    assert read_table("silver", "t")["x"].tolist() == [1, 2, 3]
+
+
 def test_round_trip_through_volume(tmp_path, monkeypatch):
     monkeypatch.setattr(config, "DATA_DIR", tmp_path / "data")
     volume = tmp_path / "volume"

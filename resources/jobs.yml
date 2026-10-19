@@ -12,6 +12,9 @@ resources:
     ops:
       catalog_name: ${var.catalog}
       name: ops
+    snapshots:
+      catalog_name: ${var.catalog}
+      name: snapshots
 
   volumes:
     raw:

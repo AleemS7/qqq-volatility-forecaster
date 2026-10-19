@@ -47,7 +47,7 @@ def run_backtest(prices: pd.DataFrame, indices: pd.DataFrame, run_log: RunLog) -
     write_table(prices, f"snapshots/{fingerprint}", "qqq_prices")
     write_table(indices, f"snapshots/{fingerprint}", "vol_indices")
     write_table(predictions, "gold", "backtest_predictions", index=False)
-    write_table(scores, "gold", "model_scores", index=False)
+    write_table(scores.astype({"year": str}), "gold", "model_scores", index=False)
     write_table(windows, "gold", "vrp_windows")
     config.RESULTS_DIR.mkdir(exist_ok=True)
     scores.to_csv(config.RESULTS_DIR / "model_scores.csv", index=False, float_format="%.4f")

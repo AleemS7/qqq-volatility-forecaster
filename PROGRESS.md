@@ -12,6 +12,7 @@ Built on `feature/1-core-backtest`:
 
 Not done yet:
 
-- Databricks: create the workspace and catalogs, `bundle deploy -t dv`, first run (runbook section "First-time setup"). The Delta path has not run against a real workspace.
+- Databricks `dv` is deployed and both jobs ran successfully on 2026-10-18. Five days in a row with no manual steps is still needed.
+- GitHub secrets for the daily workflows.
 - Brief eval against the real model (`qqq-volatility-forecaster brief-eval`). Needs `ANTHROPIC_API_KEY`.
-- Power BI `.pbip` with the four pages. Needs Power BI Desktop.
+- Databricks AI/BI dashboard (replaces Power BI, see ADR 0009).

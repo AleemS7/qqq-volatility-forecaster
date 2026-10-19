@@ -4,6 +4,11 @@ bundle:
 include:
   - resources/*.yml
 
+sync:
+  include:
+    - results/summary.json
+    - results/model_scores.csv
+
 variables:
   catalog:
     description: Unity Catalog catalog for all tables
@@ -11,10 +16,7 @@ variables:
 
 targets:
   dv:
-    mode: development
     default: true
-    presets:
-      name_prefix: ""
     variables:
       catalog: qqq_volatility_forecaster_dv
   pr:

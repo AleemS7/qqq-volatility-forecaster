@@ -72,7 +72,7 @@ def read_table(layer: str, name: str, dated: bool = True) -> pd.DataFrame:
         frame = pd.read_csv(table_path(layer, name))
     if dated:
         frame["date"] = pd.to_datetime(frame["date"])
-        return frame.set_index("date")
+        return frame.set_index("date").sort_index()
     return frame
 
 

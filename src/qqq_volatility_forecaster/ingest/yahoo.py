@@ -17,7 +17,7 @@ def fetch_prices(ticker: str, start: str) -> pd.DataFrame:
         raise RuntimeError(f"No price data returned for {ticker}")
     if isinstance(raw.columns, pd.MultiIndex):
         raw.columns = raw.columns.get_level_values(0)
-    prices = raw.rename(columns=COLUMNS)[list(COLUMNS.values())]
+    prices = raw.rename(columns=COLUMNS)[list(COLUMNS.values())].round(4)
     prices.index = pd.DatetimeIndex(raw.index).tz_localize(None).normalize()
     prices.index.name = "date"
     return prices.sort_index()

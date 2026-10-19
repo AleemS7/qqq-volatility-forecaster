@@ -9,6 +9,9 @@ description = "QQQ realized volatility forecaster compared against VXN"
 requires-python = ">=3.12"
 readme = "README.md"
 
+[project.scripts]
+qqq-volatility-forecaster = "qqq_volatility_forecaster.cli:main"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 

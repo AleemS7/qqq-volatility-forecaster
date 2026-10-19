@@ -3,14 +3,21 @@ requires = ["setuptools>=69"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "qvol"
+name = "qqq-volatility-forecaster"
 version = "0.1.0"
 description = "QQQ realized volatility forecaster compared against VXN"
 requires-python = ">=3.12"
 readme = "README.md"
 
+[project.scripts]
+qqq-volatility-forecaster = "qqq_volatility_forecaster.cli:main"
+
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+"qqq_volatility_forecaster.brief" = ["prompts/*.md"]
+"qqq_volatility_forecaster.site" = ["templates/*.j2"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -22,3 +29,6 @@ target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "SIM"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["qqq_volatility_forecaster", "tests"]

@@ -1,7 +1,7 @@
 import pandas as pd
 import pytest
 
-from qvol.models.evaluate import model_scores, pick_champion, summarize
+from qqq_volatility_forecaster.models.evaluate import model_scores, pick_champion, summarize
 
 
 def _scores(yearly: dict[str, list[float]]) -> pd.DataFrame:

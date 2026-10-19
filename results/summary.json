@@ -1,0 +1,89 @@
+{
+  "commit": "b571df760483dd817b6b907089ffc84b42e0343a",
+  "dirty": false,
+  "run_at": "2026-10-19T01:48:19+00:00",
+  "data": {
+    "price_start": "1999-03-10",
+    "price_end": "2026-10-16",
+    "test_years": [
+      2007,
+      2008,
+      2009,
+      2010,
+      2011,
+      2012,
+      2013,
+      2014,
+      2015,
+      2016,
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023,
+      2024,
+      2025,
+      2026
+    ],
+    "test_rows": 4958
+  },
+  "models": {
+    "M0": {
+      "name": "Naive: last month repeats",
+      "mae": 6.2217,
+      "years_beat_baseline": 0,
+      "test_years": 20,
+      "improvement_pct": 0.0,
+      "beat_share": 0.0
+    },
+    "M1": {
+      "name": "Market: VXN",
+      "mae": 6.2504,
+      "years_beat_baseline": 12,
+      "test_years": 20,
+      "improvement_pct": -0.4604,
+      "beat_share": 0.6
+    },
+    "M2": {
+      "name": "Linear regression (HAR)",
+      "mae": 4.8187,
+      "years_beat_baseline": 18,
+      "test_years": 20,
+      "improvement_pct": 22.5504,
+      "beat_share": 0.9
+    },
+    "M3": {
+      "name": "Random forest",
+      "mae": 5.0701,
+      "years_beat_baseline": 17,
+      "test_years": 20,
+      "improvement_pct": 18.5096,
+      "beat_share": 0.85
+    },
+    "M4": {
+      "name": "XGBoost",
+      "mae": 5.2526,
+      "years_beat_baseline": 16,
+      "test_years": 20,
+      "improvement_pct": 15.5767,
+      "beat_share": 0.8
+    }
+  },
+  "champion": "M2",
+  "vrp": {
+    "windows": 306,
+    "start": "2001-03-05",
+    "end": "2026-08-24",
+    "share_overpriced": 0.803921568627451,
+    "median_premium": 4.44429423233393,
+    "mean_premium": 3.672876030561734,
+    "typical_gain": 5.405080492031297,
+    "worst_premium": -66.54482926450972,
+    "worst_window_start": "2020-02-14",
+    "worst_window_months_erased": 12.311533447580784,
+    "max_scoreboard_drawdown": 67.36870536061963,
+    "max_drawdown_months_erased": 12.463959687546044
+  }
+}

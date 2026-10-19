@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.coverage
+data/
+logs/
+results/*
+!results/model_scores.csv
+!results/summary.json
+.env

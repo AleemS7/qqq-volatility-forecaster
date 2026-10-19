@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from qvol.config import VIX_SERIES, VXN_SERIES
+from qqq_volatility_forecaster.config import VIX_SERIES, VXN_SERIES
 
 
 def synthetic_market(days: int, seed: int = 0) -> tuple[pd.DataFrame, pd.DataFrame]:

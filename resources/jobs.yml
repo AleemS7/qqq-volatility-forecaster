@@ -1,0 +1,72 @@
+resources:
+  schemas:
+    bronze:
+      catalog_name: ${var.catalog}
+      name: bronze
+    silver:
+      catalog_name: ${var.catalog}
+      name: silver
+    gold:
+      catalog_name: ${var.catalog}
+      name: gold
+    ops:
+      catalog_name: ${var.catalog}
+      name: ops
+    snapshots:
+      catalog_name: ${var.catalog}
+      name: snapshots
+
+  volumes:
+    raw:
+      catalog_name: ${var.catalog}
+      schema_name: ${resources.schemas.bronze.name}
+      name: raw
+    exports:
+      catalog_name: ${var.catalog}
+      schema_name: ${resources.schemas.gold.name}
+      name: exports
+
+  jobs:
+    qqq_volatility_forecaster_daily:
+      name: qqq_volatility_forecaster_daily_${bundle.target}
+      max_concurrent_runs: 1
+      parameters:
+        - name: catalog
+          default: ${var.catalog}
+      email_notifications:
+        on_failure:
+          - ${workspace.current_user.userName}
+      tasks:
+        - task_key: bronze
+          notebook_task:
+            notebook_path: ../notebooks/01_bronze.py
+        - task_key: silver_score
+          depends_on:
+            - task_key: bronze
+          notebook_task:
+            notebook_path: ../notebooks/02_silver_score.py
+
+    qqq_volatility_forecaster_import_brief:
+      name: qqq_volatility_forecaster_import_brief_${bundle.target}
+      max_concurrent_runs: 1
+      parameters:
+        - name: catalog
+          default: ${var.catalog}
+      tasks:
+        - task_key: import_brief
+          notebook_task:
+            notebook_path: ../notebooks/04_import_brief.py
+
+    qqq_volatility_forecaster_backtest:
+      name: qqq_volatility_forecaster_backtest_${bundle.target}
+      max_concurrent_runs: 1
+      parameters:
+        - name: catalog
+          default: ${var.catalog}
+      email_notifications:
+        on_failure:
+          - ${workspace.current_user.userName}
+      tasks:
+        - task_key: backtest
+          notebook_task:
+            notebook_path: ../notebooks/03_backtest.py

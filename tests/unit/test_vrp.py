@@ -2,8 +2,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from qvol.features.build import build_features
-from qvol.vrp.analysis import vrp_stats, vrp_windows
+from qqq_volatility_forecaster.features.build import build_features
+from qqq_volatility_forecaster.vrp.analysis import vrp_stats, vrp_windows
 
 
 def test_windows_do_not_overlap(market):

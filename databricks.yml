@@ -1,0 +1,31 @@
+bundle:
+  name: qqq_volatility_forecaster
+
+include:
+  - resources/*.yml
+
+sync:
+  include:
+    - results/summary.json
+    - results/model_scores.csv
+
+variables:
+  catalog:
+    description: Unity Catalog catalog for all tables
+    default: qqq_volatility_forecaster_dv
+  warehouse_id:
+    description: SQL warehouse for the dashboard
+    lookup:
+      warehouse: Serverless Starter Warehouse
+
+targets:
+  dv:
+    default: true
+    variables:
+      catalog: qqq_volatility_forecaster_dv
+  pr:
+    mode: production
+    variables:
+      catalog: qqq_volatility_forecaster_pr
+    workspace:
+      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}

@@ -1,0 +1,35 @@
+name: ingest-daily
+
+on:
+  schedule:
+    - cron: "30 22 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  CATALOG: qqq_volatility_forecaster_pr
+  DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+  DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - run: pip install -r requirements.txt -e .
+      - run: qqq-volatility-forecaster ingest
+      - uses: databricks/setup-cli@main
+      - name: Upload raw files to the volume
+        run: |
+          for file in data/bronze/*.csv; do
+            databricks fs cp "$file" "dbfs:/Volumes/$CATALOG/bronze/raw/$(basename "$file")" --overwrite
+          done
+      - run: databricks bundle run qqq_volatility_forecaster_daily -t pr

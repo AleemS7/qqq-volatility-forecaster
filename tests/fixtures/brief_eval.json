@@ -1,0 +1,222 @@
+[
+  {
+    "status": "ok",
+    "date": "2007-01-03",
+    "forecast": 13.13,
+    "vxn": 17.5,
+    "vix": 12.04,
+    "rv_21": 10.98,
+    "premium": 4.37,
+    "backtest_mae": 4.8187,
+    "share_overpriced": 0.803921568627451
+  },
+  {
+    "status": "ok",
+    "date": "2008-01-15",
+    "forecast": 22.98,
+    "vxn": 27.48,
+    "vix": 23.34,
+    "rv_21": 28.55,
+    "premium": 4.5,
+    "backtest_mae": 4.8187,
+    "share_overpriced": 0.803921568627451
+  },
+  {
+    "status": "ok",
+    "date": "2009-01-28",
+    "forecast": 36.41,
+    "vxn": 39.17,
+    "vix": 39.66,
+    "rv_21": 37.04,
+    "premium": 2.76,
+    "backtest_mae": 4.8187,
+    "share_overpriced": 0.803921568627451
+  },
+  {
+    "status": "ok",
+    "date": "2010-02-10",
+    "forecast": 19.9,
+    "vxn": 25.23,
+    "vix": 25.4,
+    "rv_21": 22.64,
+    "premium": 5.33,
+    "backtest_mae": 4.8187,
+    "share_overpriced": 0.803921568627451
+  },
+  {
+    "status": "ok",
+    "date": "2011-02-23",
+    "forecast": 18.49,
+    "vxn": 24.37,
+    "vix": 22.13,
+    "rv_21": 16.4,
+    "premium": 5.88,
+    "backtest_mae": 4.8187,
+    "share_overpriced": 0.803921568627451
+  },
+  {
+    "status": "ok",
+    "date": "2012-03-07",
+    "forecast": 16.03,
+    "vxn": 20.42,
+    "vix": 19.07,
+    "rv_21": 10.98,
+    "premium": 4.39,
+    "backtest_mae": 4.8187,
+    "share_overpriced": 0.803921568627451
+  },
+  {
+    "status": "ok",
+    "date": "2013-03-22",
+    "forecast": 11.42,
+    "vxn": 13.88,
+    "vix": 13.57,
+    "rv_21": 10.77,
+    "premium": 2.46,
+    "backtest_mae": 4.8187,
+    "share_overpriced": 0.803921568627451
+  },
+  {
+    "status": "ok",
+    "date": "2014-04-04",
+    "forecast": 15.52,
+    "vxn": 18.79,
+    "vix": 13.96,
+    "rv_21": 16.08,
+    "premium": 3.27,
+    "backtest_mae": 4.8187,
+    "share_overpriced": 0.803921568627451
+  },
+  {
+    "status": "ok",
+    "date": "2015-04-20",
+    "forecast": 12.11,
+    "vxn": 14.86,
+    "vix": 13.3,
+    "rv_21": 13.88,
+    "premium": 2.75,
+    "backtest_mae": 4.8187,
+    "share_overpriced": 0.803921568627451
+  },
+  {
+    "status": "ok",
+    "date": "2016-05-02",
+    "forecast": 15.27,
+    "vxn": 18.28,
+    "vix": 14.68,
+    "rv_21": 13.35,
+    "premium": 3.01,
+    "backtest_mae": 4.8187,
+    "share_overpriced": 0.803921568627451
+  },
+  {
+    "status": "ok",
+    "date": "2017-05-12",
+    "forecast": 9.27,
+    "vxn": 12.3,
+    "vix": 10.4,
+    "rv_21": 7.92,
+    "premium": 3.03,
+    "backtest_mae": 4.8187,
+    "share_overpriced": 0.803921568627451
+  },
+  {
+    "status": "ok",
+    "date": "2018-05-25",
+    "forecast": 13.08,
+    "vxn": 16.06,
+    "vix": 13.22,
+    "rv_21": 11.9,
+    "premium": 2.98,
+    "backtest_mae": 4.8187,
+    "share_overpriced": 0.803921568627451
+  },
+  {
+    "status": "ok",
+    "date": "2019-06-11",
+    "forecast": 16.1,
+    "vxn": 20.22,
+    "vix": 15.99,
+    "rv_21": 23.67,
+    "premium": 4.12,
+    "backtest_mae": 4.8187,
+    "share_overpriced": 0.803921568627451
+  },
+  {
+    "status": "ok",
+    "date": "2020-06-23",
+    "forecast": 24.71,
+    "vxn": 31.23,
+    "vix": 31.37,
+    "rv_21": 22.78,
+    "premium": 6.52,
+    "backtest_mae": 4.8187,
+    "share_overpriced": 0.803921568627451
+  },
+  {
+    "status": "ok",
+    "date": "2021-07-07",
+    "forecast": 17.21,
+    "vxn": 21.11,
+    "vix": 16.2,
+    "rv_21": 10.75,
+    "premium": 3.9,
+    "backtest_mae": 4.8187,
+    "share_overpriced": 0.803921568627451
+  },
+  {
+    "status": "ok",
+    "date": "2022-07-20",
+    "forecast": 24.19,
+    "vxn": 30.58,
+    "vix": 23.88,
+    "rv_21": 27.07,
+    "premium": 6.39,
+    "backtest_mae": 4.8187,
+    "share_overpriced": 0.803921568627451
+  },
+  {
+    "status": "ok",
+    "date": "2023-08-03",
+    "forecast": 18.18,
+    "vxn": 22.08,
+    "vix": 15.92,
+    "rv_21": 16.0,
+    "premium": 3.9,
+    "backtest_mae": 4.8187,
+    "share_overpriced": 0.803921568627451
+  },
+  {
+    "status": "ok",
+    "date": "2024-08-16",
+    "forecast": 16.56,
+    "vxn": 19.94,
+    "vix": 14.8,
+    "rv_21": 29.77,
+    "premium": 3.38,
+    "backtest_mae": 4.8187,
+    "share_overpriced": 0.803921568627451
+  },
+  {
+    "status": "ok",
+    "date": "2025-09-03",
+    "forecast": 16.06,
+    "vxn": 19.69,
+    "vix": 16.35,
+    "rv_21": 12.48,
+    "premium": 3.63,
+    "backtest_mae": 4.8187,
+    "share_overpriced": 0.803921568627451
+  },
+  {
+    "status": "ok",
+    "date": "2026-09-17",
+    "forecast": 15.68,
+    "vxn": 19.96,
+    "vix": 15.44,
+    "rv_21": 12.72,
+    "premium": 4.28,
+    "backtest_mae": 4.8187,
+    "share_overpriced": 0.803921568627451
+  }
+]

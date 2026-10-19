@@ -5,9 +5,13 @@ __pycache__/
 .ruff_cache/
 .ipynb_checkpoints/
 .coverage
-data/
-logs/
+/data/
+/logs/
 results/*
 !results/model_scores.csv
 !results/summary.json
 .env
+!results/brief_eval.json
+/site/
+docs/STRATEGY.md
+docs/TECHNICAL.md

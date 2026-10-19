@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QQQ Volatility Forecaster</title>
+<style>
+:root {
+  color-scheme: light;
+  --surface-0: #f4f3f0;
+  --surface-1: #fcfcfb;
+  --border: #e2e1dc;
+  --grid: #e9e8e3;
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted: #77766f;
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --warning-bg: #fff4d6;
+  --warning-text: #6b4a00;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --surface-0: #121211;
+    --surface-1: #1a1a19;
+    --border: #2e2e2c;
+    --grid: #2a2a28;
+    --text-primary: #f0efec;
+    --text-secondary: #c3c2b7;
+    --text-muted: #96958c;
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --series-3: #199e70;
+    --warning-bg: #3a2f10;
+    --warning-text: #f5d58a;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --surface-0: #121211;
+  --surface-1: #1a1a19;
+  --border: #2e2e2c;
+  --grid: #2a2a28;
+  --text-primary: #f0efec;
+  --text-secondary: #c3c2b7;
+  --text-muted: #96958c;
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --series-3: #199e70;
+  --warning-bg: #3a2f10;
+  --warning-text: #f5d58a;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--surface-0);
+  color: var(--text-primary);
+  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+main { max-width: 760px; margin: 0 auto; padding: 32px 16px 48px; }
+h1 { font-size: 1.5rem; margin: 0 0 4px; }
+h2 { font-size: 1rem; margin: 0 0 12px; }
+.muted { color: var(--text-secondary); font-size: 0.875rem; }
+.banner { background: var(--warning-bg); color: var(--warning-text); border-radius: 8px; padding: 12px 16px; margin: 16px 0; font-weight: 600; }
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 24px 0; }
+.tile, .card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+.tile .label { color: var(--text-secondary); font-size: 0.8125rem; }
+.tile .value { font-size: 1.75rem; font-weight: 650; font-variant-numeric: tabular-nums; }
+.tile .unit { color: var(--text-muted); font-size: 0.8125rem; }
+.card { margin: 16px 0; }
+.tag { display: inline-block; font-size: 0.75rem; color: var(--text-secondary); border: 1px solid var(--border); border-radius: 999px; padding: 2px 8px; margin-top: 8px; }
+.legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 0.8125rem; color: var(--text-secondary); margin-bottom: 8px; }
+.legend span::before { content: ""; display: inline-block; width: 16px; height: 2px; margin-right: 6px; vertical-align: middle; background: var(--swatch); }
+svg { width: 100%; height: auto; display: block; }
+svg text { fill: var(--text-muted); font-size: 11px; font-family: inherit; }
+svg .end-label { fill: var(--text-secondary); font-size: 12px; }
+svg .grid { stroke: var(--grid); stroke-width: 1; }
+svg .line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+svg .hit { fill: transparent; }
+svg .hit:hover { fill: var(--grid); fill-opacity: 0.5; }
+table { width: 100%; border-collapse: collapse; font-size: 0.875rem; font-variant-numeric: tabular-nums; }
+th, td { text-align: right; padding: 6px 8px; border-bottom: 1px solid var(--border); }
+th:first-child, td:first-child { text-align: left; }
+th { color: var(--text-secondary); font-weight: 500; }
+details summary { cursor: pointer; color: var(--text-secondary); font-size: 0.875rem; margin-top: 12px; }
+footer { margin-top: 32px; color: var(--text-muted); font-size: 0.8125rem; }
+a { color: var(--series-1); }
+@media (max-width: 560px) {
+  .tiles { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<main>
+  <h1>QQQ Volatility Forecaster</h1>
+  <div class="muted">Last updated {{ updated }} · market data through {{ metrics.date }}</div>
+
+  {% if stale %}
+  <div class="banner" role="status">Data delayed. The numbers below are from {{ metrics.date }} and are not current.</div>
+  {% endif %}
+
+  {% if metrics.status == "ok" %}
+  <section class="tiles" aria-label="Today's numbers">
+    <div class="tile">
+      <div class="label">Model forecast, next 21 trading days</div>
+      <div class="value">{{ "%.2f"|format(metrics.forecast) }}</div>
+      <div class="unit">vol points</div>
+    </div>
+    <div class="tile">
+      <div class="label">VXN (options market)</div>
+      <div class="value">{{ "%.2f"|format(metrics.vxn) }}</div>
+      <div class="unit">vol points</div>
+    </div>
+    <div class="tile">
+      <div class="label">Premium (VXN minus forecast)</div>
+      <div class="value">{{ "%+.2f"|format(metrics.premium) }}</div>
+      <div class="unit">vol points</div>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if brief %}
+  <section class="card">
+    <h2>Daily summary</h2>
+    <p>{{ brief.text }}</p>
+    <span class="tag">{{ brief.label }}</span>
+  </section>
+  {% endif %}
+
+  <section class="card">
+    <h2>Forecast vs. realized volatility</h2>
+    <div class="legend">
+      <span style="--swatch: var(--series-1)">Model forecast</span>
+      <span style="--swatch: var(--series-2)">Realized (next 21 days)</span>
+      <span style="--swatch: var(--series-3)">VXN</span>
+    </div>
+    <svg viewBox="0 0 {{ chart.width }} {{ chart.height }}" role="img" aria-label="Out-of-sample model forecast, realized volatility, and VXN over the last two years">
+      {% for g in chart.gridlines %}
+      <line class="grid" x1="{{ chart.plot_left }}" x2="{{ chart.plot_right }}" y1="{{ g.y }}" y2="{{ g.y }}"></line>
+      <text x="{{ chart.plot_left - 8 }}" y="{{ g.y + 4 }}" text-anchor="end">{{ g.label }}</text>
+      {% endfor %}
+      {% for t in chart.ticks %}
+      <text x="{{ t.x }}" y="{{ chart.height - 8 }}" text-anchor="middle">{{ t.label }}</text>
+      {% endfor %}
+      {% for p in chart.svg_paths %}
+      <polyline class="line" style="stroke: var(--series-{{ p.slot }})" points="{{ p.points }}"></polyline>
+      <text class="end-label" x="{{ chart.plot_right + 8 }}" y="{{ p.end_y + 4 }}">{{ p.label }}</text>
+      {% endfor %}
+      {% for h in chart.hits %}
+      <rect class="hit" x="{{ h.x }}" y="0" width="{{ h.width }}" height="{{ chart.height - 28 }}"><title>{{ h.title }}</title></rect>
+      {% endfor %}
+    </svg>
+    <details>
+      <summary>Show the latest values as a table</summary>
+      <table>
+        <thead><tr><th>Date</th><th>Forecast</th><th>Realized</th><th>VXN</th></tr></thead>
+        <tbody>
+        {% for row in table %}
+          <tr><td>{{ row.date }}</td><td>{{ row.forecast }}</td><td>{{ row.actual }}</td><td>{{ row.vxn }}</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </details>
+    <p class="muted">Each forecast comes from a model trained only on earlier years. Realized volatility is known 21 trading days after each forecast, so the chart ends about a month before today.</p>
+  </section>
+
+  <footer>
+    <p><a href="{{ repo_url }}">How this works (README)</a></p>
+    <p>Not financial advice. This page measures forecasts and is not a trading strategy.</p>
+    <p>Data: QQQ prices from Yahoo Finance. VXN and VIX from Cboe Global Markets via FRED, Federal Reserve Bank of St. Louis.</p>
+  </footer>
+</main>
+</body>
+</html>

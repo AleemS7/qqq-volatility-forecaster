@@ -1,0 +1,7 @@
+resources:
+  dashboards:
+    qqq_volatility_forecaster:
+      display_name: QQQ Volatility Forecaster (${bundle.target})
+      file_path: ../dashboards/qqq_volatility_forecaster.lvdash.json
+      warehouse_id: ${var.warehouse_id}
+      dataset_catalog: ${var.catalog}

@@ -4,7 +4,11 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from qvol.features.volatility import forward_realized_vol, log_returns, realized_vol
+from qqq_volatility_forecaster.features.volatility import (
+    forward_realized_vol,
+    log_returns,
+    realized_vol,
+)
 
 
 def test_log_returns():

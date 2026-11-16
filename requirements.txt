@@ -7,4 +7,4 @@ requests==2.34.2
 scikit-learn==1.9.1
 tenacity==9.2.1
 xgboost==3.4.1
-yfinance==1.7.0
+yfinance==1.8.0
